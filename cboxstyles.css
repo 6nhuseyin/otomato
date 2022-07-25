@@ -1,0 +1,64 @@
+body {
+    background-color: #1b1b1b;
+    color: white;
+    height: 100vh;
+    margin: 0;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+
+form {
+    margin: 0 auto;
+    max-width: 500px;
+    min-width: 300px;
+    text-align: center;
+    width: 80vw;
+}
+
+
+fieldset {
+    border: none;
+    display: grid;
+    padding: 0.5rem 0;
+}
+
+input, textarea {
+    background-color: whitesmoke;
+    width: 100%;
+    margin: 0;
+    min-height: 2em;
+    border: 1px solid;
+    border-color:  #1b1b32;
+    color: #1b1b1b;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+textarea, button {
+    font-size: larger;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    height: 2.5rem;
+    background-color: #ff95a0;
+    color: #1b1b1b;
+    width: 40%;
+    margin: 0.5rem auto;
+}
+
+label {
+    font-size:medium;
+    justify-self: center;
+    /*text-align: justify;*/
+    margin: 1rem 0;
+    width: fit-content;
+}
+
+h1
+ {
+    /*margin: 1em auto;*/
+    text-align: center;
+}
