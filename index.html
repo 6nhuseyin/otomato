@@ -17,7 +17,7 @@
 
         .number-generator-container {
             background-color: #fff;
-            
+
             /* White background for the generator */
             padding: 20px;
             border-radius: 8px;
@@ -76,12 +76,16 @@
                 alert('Please enter a valid range.');
                 return;
             }
+
+            // play a sound effect
+
+            var audio = new Audio('./ses/button-click.ogg');
+            audio.play();
+
             var randomNumber = Math.floor(Math.random() * (parseInt(maxValue) - parseInt(minValue) + 1)) + parseInt(minValue);
             console.log('Random Number:', randomNumber);
             document.getElementById('result').textContent = randomNumber;
-
         }
-
     </script>
 </body>
 
