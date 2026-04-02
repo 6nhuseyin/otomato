@@ -8,6 +8,35 @@ interface RngInstance {
   result: number | null;
 }
 
+const NumberStepper = ({ label, value, onChange }: { label: string, value: string, onChange: (val: string) => void }) => {
+  const handleDecrement = () => {
+    const val = parseInt(value, 10);
+    if (!isNaN(val)) onChange(String(val - 1));
+  };
+
+  const handleIncrement = () => {
+    const val = parseInt(value, 10);
+    if (!isNaN(val)) onChange(String(val + 1));
+  };
+
+  return (
+    <div className="input-group" style={{ marginBottom: 0 }}>
+      {label && <label>{label}</label>}
+      <div style={{ display: 'flex', alignItems: 'stretch', width: '100%' }}>
+        <button type="button" onClick={handleDecrement} className="stepper-btn left" aria-label="Decrease">−</button>
+        <input 
+          type="number" 
+          className="input" 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)} 
+          style={{ borderRadius: 0, textAlign: 'center', fontWeight: '500' }}
+        />
+        <button type="button" onClick={handleIncrement} className="stepper-btn right" aria-label="Increase">+</button>
+      </div>
+    </div>
+  );
+};
+
 export const ToolsTab = () => {
   const [showRNG, setShowRNG] = useState(true);
   const [showPicker, setShowPicker] = useState(true);
@@ -35,15 +64,15 @@ export const ToolsTab = () => {
   const removeRngLine = (id: number) => setRngLines(rngLines.filter(line => line.id !== id));
 
 
-  // Random Name
-  const [namesText, setNamesText] = useState('');
-  const [randomName, setRandomName] = useState<string | null>(null);
+  // Random Picker
+  const [optionsText, setOptionsText] = useState('');
+  const [randomPick, setRandomPick] = useState<string | null>(null);
 
-  const handlePickName = () => {
-    const names = namesText.split('\n').map(n => n.trim()).filter(n => n !== '');
-    if (names.length > 0) {
-      const randomIndex = Math.floor(Math.random() * names.length);
-      setRandomName(names[randomIndex]);
+  const handlePickRandom = () => {
+    const options = optionsText.split('\n').map(n => n.trim()).filter(n => n !== '');
+    if (options.length > 0) {
+      const randomIndex = Math.floor(Math.random() * options.length);
+      setRandomPick(options[randomIndex]);
     }
   };
 
@@ -68,7 +97,7 @@ export const ToolsTab = () => {
           <input type="checkbox" checked={showRNG} onChange={e => setShowRNG(e.target.checked)} /> Show Number Generator
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-          <input type="checkbox" checked={showPicker} onChange={e => setShowPicker(e.target.checked)} /> Show Name Picker
+          <input type="checkbox" checked={showPicker} onChange={e => setShowPicker(e.target.checked)} /> Show Random Picker
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={showCoin} onChange={e => setShowCoin(e.target.checked)} /> Show Coin Flip
@@ -81,10 +110,10 @@ export const ToolsTab = () => {
           {rngLines.map((line, index) => (
             <div key={line.id} style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: index < rngLines.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
               <div style={{ flex: 1 }}>
-                <Input label="Min" type="number" value={line.min} onChange={(e: any) => updateRngLine(line.id, 'min', e.target.value)} />
+                <NumberStepper label="Min" value={line.min} onChange={(val) => updateRngLine(line.id, 'min', val)} />
               </div>
               <div style={{ flex: 1 }}>
-                <Input label="Max" type="number" value={line.max} onChange={(e: any) => updateRngLine(line.id, 'max', e.target.value)} />
+                <NumberStepper label="Max" value={line.max} onChange={(val) => updateRngLine(line.id, 'max', val)} />
               </div>
               <div style={{ flex: '0 0 auto', width: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-end', paddingBottom: '0.2rem' }}>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 500 }}>Output</div>
@@ -116,17 +145,17 @@ export const ToolsTab = () => {
       )}
 
       {showPicker && (
-        <Card title="Random Name Picker" infoText="Paste a list of names or options. Clicking the button will randomly select one item. Perfect for raffles or deciding who pays for lunch!">
+        <Card title="Random Picker" infoText="Paste a list of items or options. Clicking the button will randomly select one item. Perfect for raffles, deciding what to eat, or who pays for lunch!">
           <Input 
-            label="Paste names here (one per line)" 
+            label="Paste options here (one per line)" 
             multiline 
-            value={namesText}
-            onChange={(e: any) => setNamesText(e.target.value)}
-            placeholder="Alice&#10;Bob&#10;Charlie"
+            value={optionsText}
+            onChange={(e: any) => setOptionsText(e.target.value)}
+            placeholder="Pizza&#10;Sushi&#10;Burgers"
           />
-          <Button onClick={handlePickName}>Pick Random Name</Button>
+          <Button onClick={handlePickRandom}>Pick Random Option</Button>
           <div className="output-area" style={{ fontSize: '1.5rem' }}>
-            {randomName !== null ? randomName : <span className="output-placeholder">-</span>}
+            {randomPick !== null ? randomPick : <span className="output-placeholder">-</span>}
           </div>
         </Card>
       )}

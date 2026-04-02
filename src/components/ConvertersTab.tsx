@@ -38,6 +38,37 @@ export const ConvertersTab = () => {
   const [showHijri, setShowHijri] = useState(true);
   const [showWeight, setShowWeight] = useState(true);
   const [showDistance, setShowDistance] = useState(true);
+  const [showLength, setShowLength] = useState(true);
+
+  // Length Converter
+  const [cm, setCm] = useState('');
+  const [inches, setInches] = useState('');
+
+  const handleCmChange = (e: any) => {
+    const val = e.target.value;
+    setCm(val);
+    if (val === '') {
+      setInches('');
+      return;
+    }
+    const num = parseFloat(val);
+    if (!isNaN(num)) {
+      setInches((num / 2.54).toFixed(2));
+    }
+  };
+
+  const handleInchesChange = (e: any) => {
+    const val = e.target.value;
+    setInches(val);
+    if (val === '') {
+      setCm('');
+      return;
+    }
+    const num = parseFloat(val);
+    if (!isNaN(num)) {
+      setCm((num * 2.54).toFixed(2));
+    }
+  };
 
   // Hijri Converter
   const [hijriDateInput, setHijriDateInput] = useState(() => getLocalYMD(new Date()));
@@ -115,6 +146,9 @@ export const ConvertersTab = () => {
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
           <input type="checkbox" checked={showDistance} onChange={e => setShowDistance(e.target.checked)} /> Show Distance
         </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+          <input type="checkbox" checked={showLength} onChange={e => setShowLength(e.target.checked)} /> Show Length
+        </label>
       </div>
 
       {showHijri && (
@@ -125,8 +159,15 @@ export const ConvertersTab = () => {
           value={hijriDateInput} 
           onChange={(e: any) => setHijriDateInput(e.target.value)} 
         />
-        <div className="output-area" style={{ marginTop: '1.5rem', fontSize: '1.5rem', fontWeight: 700, letterSpacing: '0.02em', color: isToday ? 'var(--primary-color)' : 'var(--text-primary)' }}>
-          {isToday ? `{ today : ${getIslamicDateString(hijriDateInput)} }` : getIslamicDateString(hijriDateInput)}
+        <div className="output-area" style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', padding: '1.75rem 1rem' }}>
+          {isToday && (
+            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800, color: 'var(--primary-color)', backgroundColor: 'var(--bg-color)', padding: '0.35rem 1rem', borderRadius: '100px', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)' }}>
+              TODAY
+            </span>
+          )}
+          <span style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-0.01em', color: isToday ? 'var(--primary-color)' : 'var(--text-primary)' }}>
+            {getIslamicDateString(hijriDateInput)}
+          </span>
         </div>
       </Card>
       )}
@@ -167,6 +208,27 @@ export const ConvertersTab = () => {
             type="number" 
             value={miles} 
             onChange={handleMilesChange} 
+            placeholder="0"
+          />
+        </div>
+      </Card>
+      )}
+
+      {showLength && (
+      <Card title="Length Converter" infoText="Easily convert centimeters to inches, or vice versa.">
+        <div className="flex-row">
+          <Input 
+            label="Centimeters (cm)" 
+            type="number" 
+            value={cm} 
+            onChange={handleCmChange} 
+            placeholder="0"
+          />
+          <Input 
+            label="Inches (in)" 
+            type="number" 
+            value={inches} 
+            onChange={handleInchesChange} 
             placeholder="0"
           />
         </div>

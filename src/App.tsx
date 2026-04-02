@@ -3,6 +3,7 @@ import './App.css';
 import { ToolsTab } from './components/ToolsTab';
 import { ConvertersTab } from './components/ConvertersTab';
 import { MoneyTab } from './components/MoneyTab';
+import { TimeTab } from './components/TimeTab';
 
 // Reusable Components
 export const Card = ({ children, title, infoText, className = '' }: { children: React.ReactNode, title?: string, infoText?: string, className?: string }) => {
@@ -115,7 +116,7 @@ function App() {
     localStorage.setItem('darkMode', String(darkMode));
   }, [darkMode]);
 
-  const tabs = ['Tools', 'Converters', 'Money'];
+  const tabs = ['Tools', 'Converters', 'Money', 'Time'];
 
   return (
     <div className="app-container">
@@ -145,6 +146,7 @@ function App() {
         {activeTab === 'Tools' && <ToolsTab />}
         {activeTab === 'Converters' && <ConvertersTab />}
         {activeTab === 'Money' && <MoneyTab />}
+        {activeTab === 'Time' && <TimeTab />}
       </main>
     </div>
   );

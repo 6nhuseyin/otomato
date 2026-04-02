@@ -5,12 +5,54 @@ export const MoneyTab = () => {
   const [showCurrency, setShowCurrency] = useState(true);
   const [showProfit, setShowProfit] = useState(true);
 
-  // Static currency rates
-  const [gbpAmount, setGbpAmount] = useState('');
-  const GBP_TO_USD = 1.25;
-  const GBP_TO_TRY = 40.5;
+  // Static currency rates setup
+  const STATIC_RATES: Record<string, number> = {
+    GBP: 1,
+    USD: 1.25,
+    EUR: 1.17,
+    TRY: 40.5
+  };
 
-  const gbpVal = parseFloat(gbpAmount) || 0;
+  const [amt1, setAmt1] = useState('1');
+  const [cur1, setCur1] = useState('GBP');
+  const [amt2, setAmt2] = useState('1.25');
+  const [cur2, setCur2] = useState('USD');
+
+  const handleAmt1 = (val: string) => {
+    setAmt1(val);
+    const num = parseFloat(val);
+    if (!isNaN(num)) {
+      setAmt2(((num / STATIC_RATES[cur1]) * STATIC_RATES[cur2]).toFixed(2));
+    } else {
+      setAmt2('');
+    }
+  };
+
+  const handleAmt2 = (val: string) => {
+    setAmt2(val);
+    const num = parseFloat(val);
+    if (!isNaN(num)) {
+      setAmt1(((num / STATIC_RATES[cur2]) * STATIC_RATES[cur1]).toFixed(2));
+    } else {
+      setAmt1('');
+    }
+  };
+
+  const handleCur1 = (newCur: string) => {
+    setCur1(newCur);
+    const num = parseFloat(amt1);
+    if (!isNaN(num)) {
+      setAmt2(((num / STATIC_RATES[newCur]) * STATIC_RATES[cur2]).toFixed(2));
+    }
+  };
+
+  const handleCur2 = (newCur: string) => {
+    setCur2(newCur);
+    const num = parseFloat(amt1);
+    if (!isNaN(num)) {
+      setAmt2(((num / STATIC_RATES[cur1]) * STATIC_RATES[newCur]).toFixed(2));
+    }
+  };
 
   // Profit Calculator States
   const [buyPrice, setBuyPrice] = useState('');
@@ -138,20 +180,42 @@ export const MoneyTab = () => {
       </div>
 
       {showCurrency && (
-      <Card title="Currency Converter (Static Rates)" infoText="A quick look at standard, static conversion rates from GBP (£) to USD ($) and TRY (₺).">
-        <Input 
-          label="GBP (£)" 
-          type="number" 
-          value={gbpAmount} 
-          onChange={(e: any) => setGbpAmount(e.target.value)} 
-          placeholder="0.00"
-        />
-        <div className="flex-row" style={{ marginTop: '1rem' }}>
-          <div className="output-area" style={{ marginTop: 0, padding: '0.75rem', fontSize: '1.25rem' }}>
-            ${(gbpVal * GBP_TO_USD).toFixed(2)} USD
+      <Card title="Currency Converter" infoText="A quick look at standard, static conversion rates. Convert freely between any pair.">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', backgroundColor: 'var(--primary-light)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <input type="number" className="input" style={{ flex: 1, fontSize: '1.25rem', fontWeight: 600, padding: '1rem', backgroundColor: 'var(--card-bg)' }} value={amt1} onChange={(e) => handleAmt1(e.target.value)} placeholder="0.00" />
+            <select className="input" style={{ width: '130px', flex: 'none', fontWeight: 600, backgroundColor: 'var(--card-bg)' }} value={cur1} onChange={(e) => handleCur1(e.target.value)}>
+              <option value="GBP">GBP (£)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="TRY">TRY (₺)</option>
+            </select>
           </div>
-          <div className="output-area" style={{ marginTop: 0, padding: '0.75rem', fontSize: '1.25rem' }}>
-            ₺{(gbpVal * GBP_TO_TRY).toFixed(2)} TRY
+          
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '-0.35rem 0' }}>
+            <button 
+              type="button"
+              onClick={() => {
+                const tempCur = cur1; setCur1(cur2); setCur2(tempCur);
+                const tempAmt = amt1; setAmt1(amt2); setAmt2(tempAmt);
+              }}
+              style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'all var(--transition-bounce)', zIndex: 2 }}
+              title="Swap Currencies"
+              onMouseOver={(e) => { e.currentTarget.style.color = 'var(--primary-color)'; e.currentTarget.style.borderColor = 'var(--primary-color)'; e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              ⇅
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <input type="number" className="input" style={{ flex: 1, fontSize: '1.25rem', fontWeight: 600, padding: '1rem', backgroundColor: 'var(--card-bg)' }} value={amt2} onChange={(e) => handleAmt2(e.target.value)} placeholder="0.00" />
+            <select className="input" style={{ width: '130px', flex: 'none', fontWeight: 600, backgroundColor: 'var(--card-bg)' }} value={cur2} onChange={(e) => handleCur2(e.target.value)}>
+              <option value="GBP">GBP (£)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="TRY">TRY (₺)</option>
+            </select>
           </div>
         </div>
       </Card>
